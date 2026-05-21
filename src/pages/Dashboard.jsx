@@ -1,28 +1,12 @@
-import { useEffect, useState } from 'react';
-import api from '../services/api';
 import CategoryCard from '../components/CategoryCard';
+import useBudgetSummary from '../hooks/useBudgetSummary';
 
 // Hårdkodat budget-id för testning — ersätts med riktigt id när JWT är implementerat
 const BUDGET_ID = 'ce54634e-79e9-422e-a7eb-59292d576c16';
 
 function Dashboard() {
-  const [summary, setSummary] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchSummary = async () => {
-      try {
-        const response = await api.get(`/budgets/summary/${BUDGET_ID}`);
-        setSummary(response.data);
-      } catch (err) {
-        setError('Kunde inte hämta budgetsammanfattning');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchSummary();
-  }, []);
+  // Använder custom hook istället för useEffect direkt i komponenten
+  const { summary, loading, error } = useBudgetSummary(BUDGET_ID);
 
   if (loading) return <p className="p-8">Laddar...</p>;
   if (error) return <p className="p-8 text-red-500">{error}</p>;
