@@ -4,7 +4,7 @@ import CategoryCard from '../components/CategoryCard';
 import { formatCurrency } from '../helpers/format';
 
 // Hårdkodat budget-id för testning — ersätts med riktigt id när JWT är implementerat
-const BUDGET_ID = 'ce54634e-79e9-422e-a7eb-59292d576c16';
+const BUDGET_ID = '085b0705-dd17-4f3c-9ca3-fcc6a8f53b15';
 
 function Dashboard() {
   const [summary, setSummary] = useState(null);
