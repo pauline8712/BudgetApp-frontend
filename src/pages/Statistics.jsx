@@ -4,6 +4,8 @@ import CategoryCard from '../components/CategoryCard';
 import ProgressBar from '../components/ProgressBar';
 import TransactionItem from '../components/TransactionItem';
 import useBudgetSummary from '../hooks/useBudgetSummary';
+import { formatCurrency } from '../helpers/format';
+import { calcRemaining } from '../helpers/calculations';
 
 // Hårdkodat budget-id för testning — ersätts med riktigt id när JWT är implementerat
 const BUDGET_ID = 'ce54634e-79e9-422e-a7eb-59292d576c16';
@@ -54,7 +56,6 @@ function getDayDots(transactions, year, week) {
 }
 
 function Statistics() {
-  // Använder useBudgetSummary hook för månadsdata
   const { summary, loading, error } = useBudgetSummary(BUDGET_ID);
   const [activeTab, setActiveTab] = useState('manad');
   const [currentWeek, setCurrentWeek] = useState(() => getISOWeek(new Date()));
@@ -62,7 +63,6 @@ function Statistics() {
   const [weekLoading, setWeekLoading] = useState(false);
   const [weekError, setWeekError] = useState(null);
 
-  // Hämtar transaktioner för alla veckokategorier när veckovy är aktiv eller veckan ändras
   useEffect(() => {
     if (activeTab !== 'vecka' || !summary) return;
 
@@ -109,7 +109,7 @@ function Statistics() {
       .filter((t) => t.type === 'Expense')
       .reduce((s, t) => s + t.amount, 0);
   }, 0);
-  const kvarVecka = veckobudget - spenderatVecka;
+  const kvarVecka = calcRemaining(veckobudget, spenderatVecka);
 
   const handlePrevWeek = () => {
     const monday = getMondayOfISOWeek(currentWeek.year, currentWeek.week);
@@ -157,15 +157,15 @@ function Statistics() {
             <div className="grid grid-cols-3 gap-3 mb-8">
               <div className="bg-gray-100 rounded-lg p-4">
                 <p className="text-xs text-gray-500 mb-1">Total budget</p>
-                <p className="text-lg font-medium text-gray-900">{summary.totalAmount.toLocaleString('sv-SE')} kr</p>
+                <p className="text-lg font-medium text-gray-900">{formatCurrency(summary.totalAmount)}</p>
               </div>
               <div className="bg-gray-100 rounded-lg p-4">
                 <p className="text-xs text-gray-500 mb-1">Spenderat</p>
-                <p className="text-lg font-medium text-red-600">{summary.totalSpent.toLocaleString('sv-SE')} kr</p>
+                <p className="text-lg font-medium text-red-600">{formatCurrency(summary.totalSpent)}</p>
               </div>
               <div className="bg-gray-100 rounded-lg p-4">
                 <p className="text-xs text-gray-500 mb-1">Kvar</p>
-                <p className="text-lg font-medium text-green-700">{summary.remainingAmount.toLocaleString('sv-SE')} kr</p>
+                <p className="text-lg font-medium text-green-700">{formatCurrency(summary.remainingAmount)}</p>
               </div>
             </div>
             {veckokategorier.length > 0 && (
@@ -200,16 +200,16 @@ function Statistics() {
             <div className="grid grid-cols-3 gap-3 mb-6">
               <div className="bg-gray-100 rounded-lg p-4">
                 <p className="text-xs text-gray-500 mb-1">Veckobudget</p>
-                <p className="text-lg font-medium text-gray-900">{veckobudget.toLocaleString('sv-SE')} kr</p>
+                <p className="text-lg font-medium text-gray-900">{formatCurrency(veckobudget)}</p>
               </div>
               <div className="bg-gray-100 rounded-lg p-4">
                 <p className="text-xs text-gray-500 mb-1">Spenderat</p>
-                <p className="text-lg font-medium text-red-600">{spenderatVecka.toLocaleString('sv-SE')} kr</p>
+                <p className="text-lg font-medium text-red-600">{formatCurrency(spenderatVecka)}</p>
               </div>
               <div className="bg-gray-100 rounded-lg p-4">
                 <p className="text-xs text-gray-500 mb-1">Kvar</p>
                 <p className={`text-lg font-medium ${kvarVecka >= 0 ? 'text-green-700' : 'text-red-600'}`}>
-                  {kvarVecka.toLocaleString('sv-SE')} kr
+                  {formatCurrency(kvarVecka)}
                 </p>
               </div>
             </div>
@@ -220,14 +220,18 @@ function Statistics() {
                 <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">Veckokategorier</p>
                 {veckokategorier.map((category) => {
                   const transactions = weeklyTransactions[category.id] || [];
-                  const spentThisWeek = transactions.filter((t) => t.type === 'Expense').reduce((sum, t) => sum + t.amount, 0);
-                  const remaining = category.weeklyAmount - spentThisWeek;
+                  const spentThisWeek = transactions
+                    .filter((t) => t.type === 'Expense')
+                    .reduce((sum, t) => sum + t.amount, 0);
+                  const remaining = calcRemaining(category.weeklyAmount, spentThisWeek);
                   const dayDots = getDayDots(transactions, currentWeek.year, currentWeek.week);
                   return (
                     <div key={category.id} className="bg-white border border-gray-200 rounded-xl p-4 mb-3">
                       <div className="flex justify-between items-center mb-2">
                         <p className="font-medium text-gray-900">{category.name}</p>
-                        <p className="text-xs text-gray-400">{remaining.toLocaleString('sv-SE')} / {category.weeklyAmount.toLocaleString('sv-SE')} kr</p>
+                        <p className="text-xs text-gray-400">
+                          {formatCurrency(remaining)} / {formatCurrency(category.weeklyAmount)}
+                        </p>
                       </div>
                       <ProgressBar current={Math.max(0, remaining)} allocated={category.weeklyAmount} />
                       <div className="flex justify-between mt-3 mb-1 px-1">
@@ -255,10 +259,14 @@ function Statistics() {
                   <div key={category.id} className="bg-white border border-gray-200 rounded-xl p-4 mb-3">
                     <div className="flex justify-between items-center mb-2">
                       <p className="font-medium text-gray-900">{category.name}</p>
-                      <p className="text-xs text-gray-400">{category.currentBalance.toLocaleString('sv-SE')} / {category.allocatedAmount.toLocaleString('sv-SE')} kr</p>
+                      <p className="text-xs text-gray-400">
+                        {formatCurrency(category.currentBalance)} / {formatCurrency(category.allocatedAmount)}
+                      </p>
                     </div>
                     <ProgressBar current={category.currentBalance} allocated={category.allocatedAmount} />
-                    <p className="text-xs text-gray-400 mt-2">Spenderat: {(category.amountSpent ?? 0).toLocaleString('sv-SE')} kr</p>
+                    <p className="text-xs text-gray-400 mt-2">
+                      Spenderat: {formatCurrency(category.amountSpent ?? 0)}
+                    </p>
                   </div>
                 ))}
               </div>
