@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../services/api';
 import CategoryCard from '../components/CategoryCard';
+import { formatCurrency } from '../helpers/format';
 
 // Hårdkodat budget-id för testning — ersätts med riktigt id när JWT är implementerat
 const BUDGET_ID = 'ce54634e-79e9-422e-a7eb-59292d576c16';
@@ -41,15 +42,15 @@ function Dashboard() {
         <div className="grid grid-cols-2 gap-3 mb-8">
           <div className="bg-gray-100 rounded-lg p-4">
             <p className="text-xs text-gray-500 mb-1">Total budget</p>
-            <p className="text-xl font-medium text-gray-900">{summary.totalAmount.toLocaleString('sv-SE')} kr</p>
+            <p className="text-xl font-medium text-gray-900">{formatCurrency(summary.totalAmount)}</p>
           </div>
           <div className="bg-gray-100 rounded-lg p-4">
             <p className="text-xs text-gray-500 mb-1">Kvar</p>
-            <p className="text-xl font-medium text-green-700">{summary.remainingAmount.toLocaleString('sv-SE')} kr</p>
+            <p className="text-xl font-medium text-green-700">{formatCurrency(summary.remainingAmount)}</p>
           </div>
           <div className="bg-gray-100 rounded-lg p-4">
             <p className="text-xs text-gray-500 mb-1">Spenderat</p>
-            <p className="text-xl font-medium text-red-600">{summary.totalSpent.toLocaleString('sv-SE')} kr</p>
+            <p className="text-xl font-medium text-red-600">{formatCurrency(summary.totalSpent)}</p>
           </div>
           <div className="bg-gray-100 rounded-lg p-4">
             <p className="text-xs text-gray-500 mb-1">Kategorier</p>
