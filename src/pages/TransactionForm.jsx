@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import api from '../services/api';
 import Button from '../components/Button';
+import { getBudgetId } from '../helpers/auth';
 
-// Hårdkodat budget-id för testning — ersätts med riktigt id när JWT är implementerat
-const BUDGET_ID = 'ce54634e-79e9-422e-a7eb-59292d576c16';
+const BUDGET_ID = getBudgetId();
 
 function TransactionForm() {
   const [categories, setCategories] = useState([]);

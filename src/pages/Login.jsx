@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
+import { getUserIdFromToken } from '../helpers/auth';
 
 function Login() {
   const navigate = useNavigate();
@@ -20,6 +21,16 @@ function Login() {
       const response = await api.post('/auth/login', form);
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('email', response.data.email);
+
+      // Hämta användarens budget och spara budgetId i localStorage
+      const userId = getUserIdFromToken();
+      if (userId) {
+        const budgetsResponse = await api.get(`/budgets/${userId}`);
+        if (budgetsResponse.data && budgetsResponse.data.length > 0) {
+          localStorage.setItem('budgetId', budgetsResponse.data[0].id);
+        }
+      }
+
       navigate('/');
     } catch (err) {
       setError('Fel email eller lösenord');
