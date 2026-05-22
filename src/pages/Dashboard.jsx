@@ -1,9 +1,9 @@
 import CategoryCard from '../components/CategoryCard';
 import useBudgetSummary from '../hooks/useBudgetSummary';
 import { formatCurrency } from '../helpers/format';
+import { getBudgetId } from '../helpers/auth';
 
-// Hårdkodat budget-id för testning — ersätts med riktigt id när JWT är implementerat
-const BUDGET_ID = '085b0705-dd17-4f3c-9ca3-fcc6a8f53b15';
+const BUDGET_ID = getBudgetId();
 
 function Dashboard() {
   // Använder custom hook istället för useEffect direkt i komponenten

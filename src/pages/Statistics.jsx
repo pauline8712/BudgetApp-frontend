@@ -6,9 +6,9 @@ import TransactionItem from '../components/TransactionItem';
 import useBudgetSummary from '../hooks/useBudgetSummary';
 import { formatCurrency } from '../helpers/format';
 import { calcRemaining } from '../helpers/calculations';
+import { getBudgetId } from '../helpers/auth';
 
-// Hårdkodat budget-id för testning — ersätts med riktigt id när JWT är implementerat
-const BUDGET_ID = 'ce54634e-79e9-422e-a7eb-59292d576c16';
+const BUDGET_ID = getBudgetId();
 
 const DAGNAMN = ['Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör', 'Sön'];
 
