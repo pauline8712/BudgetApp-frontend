@@ -1,4 +1,5 @@
 import ProgressBar from './ProgressBar';
+import { formatCurrency } from '../helpers/format';
 
 // Återanvändbar CategoryCard-komponent — används i Dashboard och statistiksidan
 function CategoryCard({ category }) {
@@ -7,7 +8,7 @@ function CategoryCard({ category }) {
       <div className="flex justify-between items-center mb-2">
         <p className="font-medium text-gray-900">{category.name}</p>
         <p className="text-xs text-gray-400">
-          {category.currentBalance.toLocaleString('sv-SE')} / {category.allocatedAmount.toLocaleString('sv-SE')} kr
+          {formatCurrency(category.currentBalance)} / {formatCurrency(category.allocatedAmount)}
         </p>
       </div>
 
@@ -17,12 +18,12 @@ function CategoryCard({ category }) {
       <div className="flex justify-between items-center mt-2">
         <p className="text-xs text-gray-400">
           {/* amountSpent finns bara i BudgetSummary — defaultar till 0 annars */}
-          Spenderat: {(category.amountSpent ?? 0).toLocaleString('sv-SE')} kr
+          Spenderat: {formatCurrency(category.amountSpent ?? 0)}
         </p>
         {/* Visar veckobudget om kategorin är veckobaserad */}
         {category.isWeekly && (
           <span className="text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded-full">
-            {category.weeklyAmount.toLocaleString('sv-SE')} kr/vecka
+            {formatCurrency(category.weeklyAmount)}/vecka
           </span>
         )}
       </div>
