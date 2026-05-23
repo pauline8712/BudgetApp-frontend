@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
 import api from '../services/api';
 
-// Custom hook för att hämta budgetsammanfattning
-// Hanterar loading, error och data — återanvänds i Dashboard och Statistics
 function useBudgetSummary(budgetId) {
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!budgetId) return;
+    if (!budgetId) {
+      setLoading(false);
+      return;
+    }
 
     const fetchSummary = async () => {
       try {
