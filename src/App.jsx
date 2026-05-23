@@ -6,6 +6,7 @@ import TransactionForm from './pages/TransactionForm';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ResetPassword from './pages/ResetPassword';
+import Admin from './pages/Admin';
 import ProtectedRoute from './components/ProtectedRoute';
 import NavBar from './components/NavBar';
 
@@ -25,6 +26,7 @@ function AppLayout() {
         <Route path="/categories" element={<ProtectedRoute><Categories /></ProtectedRoute>} />
         <Route path="/add-transaction" element={<ProtectedRoute><TransactionForm /></ProtectedRoute>} />
         <Route path="/statistics" element={<ProtectedRoute><Statistics /></ProtectedRoute>} />
+        <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
       </Routes>
     </>
   );

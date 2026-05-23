@@ -1,11 +1,14 @@
 import { NavLink } from 'react-router-dom';
+import { isAdmin } from '../helpers/auth';
 
 function NavBar() {
+  const adminUser = isAdmin();
+
   return (
     <nav style={{ background: 'var(--color-background-primary)' }} className="w-full border-b border-gray-200">
       <div className="flex justify-around items-center py-2">
         
-        <NavLink to="/" end className={({ isActive }) => `flex flex-col items-center gap-1 flex-1`}>
+        <NavLink to="/" end className="flex flex-col items-center gap-1 flex-1">
           {({ isActive }) => (
             <>
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isActive ? 'bg-blue-100' : 'bg-gray-100'}`}>
@@ -48,6 +51,19 @@ function NavBar() {
             </>
           )}
         </NavLink>
+
+        {adminUser && (
+          <NavLink to="/admin" className="flex flex-col items-center gap-1 flex-1">
+            {({ isActive }) => (
+              <>
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isActive ? 'bg-blue-100' : 'bg-gray-100'}`}>
+                  <svg xmlns="http://www.w3.org/2000/svg" className={`w-5 h-5 ${isActive ? 'text-blue-600' : 'text-gray-400'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+                </div>
+                <span className={`text-xs ${isActive ? 'text-blue-600 font-medium' : 'text-gray-400'}`}>Admin</span>
+              </>
+            )}
+          </NavLink>
+        )}
 
       </div>
     </nav>
