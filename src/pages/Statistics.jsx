@@ -7,9 +7,6 @@ import useBudgetSummary from '../hooks/useBudgetSummary';
 import { formatCurrency } from '../helpers/format';
 import { calcRemaining } from '../helpers/calculations';
 import { getBudgetId } from '../helpers/auth';
-import { useEffect, useState } from 'react';
-
-const [BUDGET_ID] = useState(getBudgetId());
 
 const DAGNAMN = ['Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör', 'Sön'];
 
@@ -57,6 +54,7 @@ function getDayDots(transactions, year, week) {
 }
 
 function Statistics() {
+  const [BUDGET_ID] = useState(getBudgetId());
   const { summary, loading, error } = useBudgetSummary(BUDGET_ID);
   const [activeTab, setActiveTab] = useState('manad');
   const [currentWeek, setCurrentWeek] = useState(() => getISOWeek(new Date()));
