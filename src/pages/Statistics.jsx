@@ -7,8 +7,9 @@ import useBudgetSummary from '../hooks/useBudgetSummary';
 import { formatCurrency } from '../helpers/format';
 import { calcRemaining } from '../helpers/calculations';
 import { getBudgetId } from '../helpers/auth';
+import { useEffect, useState } from 'react';
 
-const BUDGET_ID = getBudgetId();
+const [BUDGET_ID] = useState(getBudgetId());
 
 const DAGNAMN = ['Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör', 'Sön'];
 
