@@ -5,6 +5,21 @@ import { formatCurrency } from '../helpers/format';
 import { getBudgetId, getUserIdFromToken } from '../helpers/auth';
 import api from '../services/api';
 
+const MONTHS = [
+  { value: 1, label: 'Januari' },
+  { value: 2, label: 'Februari' },
+  { value: 3, label: 'Mars' },
+  { value: 4, label: 'April' },
+  { value: 5, label: 'Maj' },
+  { value: 6, label: 'Juni' },
+  { value: 7, label: 'Juli' },
+  { value: 8, label: 'Augusti' },
+  { value: 9, label: 'September' },
+  { value: 10, label: 'Oktober' },
+  { value: 11, label: 'November' },
+  { value: 12, label: 'December' },
+];
+
 function Dashboard() {
   const [budgetId, setBudgetId] = useState(getBudgetId());
   const { summary, loading, error } = useBudgetSummary(budgetId);
@@ -15,21 +30,51 @@ function Dashboard() {
     year: new Date().getFullYear(),
     totalAmount: '',
   });
+  const [categories, setCategories] = useState([]);
+  const [newCategory, setNewCategory] = useState({
+    name: '',
+    allocatedAmount: '',
+    isWeekly: false,
+    weeklyAmount: '',
+  });
+
+  const handleAddCategory = () => {
+    if (!newCategory.name || !newCategory.allocatedAmount) return;
+    setCategories([...categories, { ...newCategory }]);
+    setNewCategory({ name: '', allocatedAmount: '', isWeekly: false, weeklyAmount: '' });
+  };
+
+  const handleRemoveCategory = (index) => {
+    setCategories(categories.filter((_, i) => i !== index));
+  };
 
   const handleCreate = async (e) => {
     e.preventDefault();
     setCreating(true);
     try {
       const userId = getUserIdFromToken();
-      const response = await api.post('/budgets', {
+      const budgetResponse = await api.post('/budgets', {
         userId,
         name: form.name,
         month: parseInt(form.month),
         year: parseInt(form.year),
         totalAmount: parseFloat(form.totalAmount),
       });
-      localStorage.setItem('budgetId', response.data.id);
-      setBudgetId(response.data.id);
+      const newBudgetId = budgetResponse.data.id;
+
+      // Skapa kategorier om det finns några
+      for (const cat of categories) {
+        await api.post('/categories', {
+          budgetId: newBudgetId,
+          name: cat.name,
+          allocatedAmount: parseFloat(cat.allocatedAmount),
+          isWeekly: cat.isWeekly,
+          weeklyAmount: cat.isWeekly ? parseFloat(cat.weeklyAmount) : null,
+        });
+      }
+
+      localStorage.setItem('budgetId', newBudgetId);
+      setBudgetId(newBudgetId);
     } catch (err) {
       alert('Kunde inte skapa budget');
     } finally {
@@ -42,8 +87,8 @@ function Dashboard() {
 
   if (!budgetId || !summary) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-        <div className="bg-white rounded-xl shadow p-8 w-full max-w-sm">
+      <div className="min-h-screen bg-gray-50 px-4 py-8">
+        <div className="bg-white rounded-xl shadow p-8 w-full max-w-sm mx-auto">
           <h1 className="text-2xl font-semibold text-gray-900 mb-2">Välkommen!</h1>
           <p className="text-sm text-gray-500 mb-6">Skapa din första budget för att komma igång.</p>
           <form onSubmit={handleCreate} className="space-y-4">
@@ -61,38 +106,27 @@ function Dashboard() {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-sm text-gray-600 mb-1">Månad</label>
-                <input
-                  type="number"
-                  min="1"
-                  max="12"
+                <select
                   required
                   value={form.month}
                   onChange={(e) => setForm({ ...form, month: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+                >
+                  {MONTHS.map((m) => (
+                    <option key={m.value} value={m.value}>{m.label}</option>
+                  ))}
+                </select>
               </div>
               <div>
-  <label className="block text-sm text-gray-600 mb-1">Månad</label>
-  <select
-    required
-    value={form.month}
-    onChange={(e) => setForm({ ...form, month: e.target.value })}
-    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-  >
-    <option value="1">Januari</option>
-    <option value="2">Februari</option>
-    <option value="3">Mars</option>
-    <option value="4">April</option>
-    <option value="5">Maj</option>
-    <option value="6">Juni</option>
-    <option value="7">Juli</option>
-    <option value="8">Augusti</option>
-    <option value="9">September</option>
-    <option value="10">Oktober</option>
-    <option value="11">November</option>
-    <option value="12">December</option>
-  </select>
-</div>
+                <label className="block text-sm text-gray-600 mb-1">År</label>
+                <input
+                  type="number"
+                  required
+                  value={form.year}
+                  onChange={(e) => setForm({ ...form, year: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
             </div>
             <div>
               <label className="block text-sm text-gray-600 mb-1">Total budget (kr)</label>
@@ -105,6 +139,80 @@ function Dashboard() {
                 placeholder="t.ex. 10000"
               />
             </div>
+
+            {/* Kategorier */}
+            <div className="border-t pt-4">
+              <p className="text-sm font-medium text-gray-700 mb-3">Kategorier (valfritt)</p>
+
+              {categories.map((cat, index) => (
+                <div key={index} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2 mb-2">
+                  <div>
+                    <p className="text-sm font-medium text-gray-800">{cat.name}</p>
+                    <p className="text-xs text-gray-500">
+                      {cat.isWeekly ? `${cat.weeklyAmount} kr/vecka` : `${cat.allocatedAmount} kr/månad`}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveCategory(index)}
+                    className="text-red-400 text-xs hover:text-red-600"
+                  >
+                    Ta bort
+                  </button>
+                </div>
+              ))}
+
+              <div className="space-y-2 mt-2">
+                <input
+                  type="text"
+                  placeholder="Kategorinamn (t.ex. Mat)"
+                  value={newCategory.name}
+                  onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setNewCategory({ ...newCategory, isWeekly: false })}
+                    className={`flex-1 py-1.5 text-xs rounded-lg border ${!newCategory.isWeekly ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-600 border-gray-300'}`}
+                  >
+                    Månadsbudget
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setNewCategory({ ...newCategory, isWeekly: true })}
+                    className={`flex-1 py-1.5 text-xs rounded-lg border ${newCategory.isWeekly ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-600 border-gray-300'}`}
+                  >
+                    Veckobudget
+                  </button>
+                </div>
+                {newCategory.isWeekly ? (
+                  <input
+                    type="number"
+                    placeholder="Belopp per vecka (kr)"
+                    value={newCategory.weeklyAmount}
+                    onChange={(e) => setNewCategory({ ...newCategory, weeklyAmount: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                ) : (
+                  <input
+                    type="number"
+                    placeholder="Belopp per månad (kr)"
+                    value={newCategory.allocatedAmount}
+                    onChange={(e) => setNewCategory({ ...newCategory, allocatedAmount: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                )}
+                <button
+                  type="button"
+                  onClick={handleAddCategory}
+                  className="w-full border border-blue-600 text-blue-600 rounded-lg py-2 text-sm font-medium hover:bg-blue-50"
+                >
+                  + Lägg till kategori
+                </button>
+              </div>
+            </div>
+
             <button
               type="submit"
               disabled={creating}
