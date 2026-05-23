@@ -72,15 +72,27 @@ function Dashboard() {
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-600 mb-1">År</label>
-                <input
-                  type="number"
-                  required
-                  value={form.year}
-                  onChange={(e) => setForm({ ...form, year: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+  <label className="block text-sm text-gray-600 mb-1">Månad</label>
+  <select
+    required
+    value={form.month}
+    onChange={(e) => setForm({ ...form, month: e.target.value })}
+    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+  >
+    <option value="1">Januari</option>
+    <option value="2">Februari</option>
+    <option value="3">Mars</option>
+    <option value="4">April</option>
+    <option value="5">Maj</option>
+    <option value="6">Juni</option>
+    <option value="7">Juli</option>
+    <option value="8">Augusti</option>
+    <option value="9">September</option>
+    <option value="10">Oktober</option>
+    <option value="11">November</option>
+    <option value="12">December</option>
+  </select>
+</div>
             </div>
             <div>
               <label className="block text-sm text-gray-600 mb-1">Total budget (kr)</label>
