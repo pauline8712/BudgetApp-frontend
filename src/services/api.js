@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5123/api',
+  baseURL: 'https://group-project-backend-production.up.railway.app/api',
 });
 
 // Interceptor — lägger automatiskt till JWT-token på alla requests
