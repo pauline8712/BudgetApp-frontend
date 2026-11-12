@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import api from '../services/api';
+import { useEffect, useState } from "react";
+import api from "../services/api";
 
 function useBudgetSummary(budgetId) {
   const [summary, setSummary] = useState(null);
@@ -16,8 +16,8 @@ function useBudgetSummary(budgetId) {
       try {
         const response = await api.get(`/budgets/summary/${budgetId}`);
         setSummary(response.data);
-      } catch (err) {
-        setError('Kunde inte hämta budgetsammanfattning');
+      } catch {
+        setError("Kunde inte hämta budgetsammanfattning");
       } finally {
         setLoading(false);
       }

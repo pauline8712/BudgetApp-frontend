@@ -1,0 +1,32 @@
+name: Frontend CI
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-test-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hämta koden
+        uses: actions/checkout@v7
+
+      - name: Installera Node 22
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Installera paket
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Kontrollera formatering
+        run: npm run format:check
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build

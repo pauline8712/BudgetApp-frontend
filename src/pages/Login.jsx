@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import api from '../services/api';
-import { getUserIdFromToken } from '../helpers/auth';
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import api from "../services/api";
+import { getUserIdFromToken } from "../helpers/auth";
 
 function Login() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -18,22 +18,22 @@ function Login() {
     setError(null);
     setLoading(true);
     try {
-      const response = await api.post('/auth/login', form);
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('email', response.data.email);
+      const response = await api.post("/auth/login", form);
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("email", response.data.email);
 
       // Hämta användarens budget och spara budgetId i localStorage
       const userId = getUserIdFromToken();
       if (userId) {
         const budgetsResponse = await api.get(`/budgets/${userId}`);
         if (budgetsResponse.data && budgetsResponse.data.length > 0) {
-          localStorage.setItem('budgetId', budgetsResponse.data[0].id);
+          localStorage.setItem("budgetId", budgetsResponse.data[0].id);
         }
       }
 
-      navigate('/');
-    } catch (err) {
-      setError('Fel email eller lösenord');
+      navigate("/");
+    } catch {
+      setError("Fel email eller lösenord");
     } finally {
       setLoading(false);
     }
@@ -74,12 +74,12 @@ function Login() {
             disabled={loading}
             className="w-full bg-blue-600 text-white rounded-lg py-2 text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
           >
-            {loading ? 'Loggar in...' : 'Logga in'}
+            {loading ? "Loggar in..." : "Logga in"}
           </button>
         </form>
 
         <p className="text-sm text-gray-500 mt-4 text-center">
-          Inget konto?{' '}
+          Inget konto?{" "}
           <Link to="/register" className="text-blue-600 hover:underline">
             Registrera dig
           </Link>

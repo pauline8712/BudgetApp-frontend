@@ -5,9 +5,9 @@ function ProgressBar({ current, allocated }) {
 
   // Väljer färg baserat på hur mycket som är kvar
   const getColor = () => {
-    if (percent > 50) return 'bg-green-500';
-    if (percent > 20) return 'bg-amber-400';
-    return 'bg-red-500';
+    if (percent > 50) return "bg-green-500";
+    if (percent > 20) return "bg-amber-400";
+    return "bg-red-500";
   };
 
   return (

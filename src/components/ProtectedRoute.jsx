@@ -1,8 +1,8 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate } from "react-router-dom";
 
 // Skyddar routes — skickar användaren till /login om token saknas
 function ProtectedRoute({ children }) {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
 
   if (!token) {
     return <Navigate to="/login" replace />;
