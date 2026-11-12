@@ -1,16 +1,13 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-  plugins: [
-    react(),
-    tailwindcss(),
-  ],
+  plugins: [react(), tailwindcss()],
   test: {
-    environment: 'jsdom',
+    environment: "jsdom",
   },
   preview: {
-    allowedHosts: ['group-project-frontend-production.up.railway.app'],
+    allowedHosts: ["group-project-frontend-production.up.railway.app"],
   },
-})
+});

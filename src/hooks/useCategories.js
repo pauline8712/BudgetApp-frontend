@@ -1,5 +1,5 @@
-import { useEffect, useState, useCallback } from 'react';
-import api from '../services/api';
+import { useEffect, useState, useCallback } from "react";
+import api from "../services/api";
 
 function useCategories(budgetId) {
   const [categories, setCategories] = useState([]);
@@ -12,7 +12,7 @@ function useCategories(budgetId) {
       const response = await api.get(`/categories/${budgetId}`);
       setCategories(response.data);
     } catch {
-      setError('Kunde inte hämta kategorier');
+      setError("Kunde inte hämta kategorier");
     } finally {
       setLoading(false);
     }

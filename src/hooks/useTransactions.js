@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import api from '../services/api';
+import { useEffect, useState } from "react";
+import api from "../services/api";
 
 // Custom hook för att hämta transaktioner för ett categoryId
 // Hanterar loading, error och data — återanvänds i Statistics och TransactionForm
@@ -16,7 +16,7 @@ function useTransactions(categoryId) {
         const response = await api.get(`/transactions/${categoryId}`);
         setTransactions(response.data);
       } catch {
-        setError('Kunde inte hämta transaktioner');
+        setError("Kunde inte hämta transaktioner");
       } finally {
         setLoading(false);
       }

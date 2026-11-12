@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import api from '../services/api';
-import Button from '../components/Button';
-import { getBudgetId } from '../helpers/auth';
+import { useEffect, useState } from "react";
+import api from "../services/api";
+import Button from "../components/Button";
+import { getBudgetId } from "../helpers/auth";
 
 function TransactionForm() {
   const [budgetId] = useState(getBudgetId());
@@ -11,11 +11,11 @@ function TransactionForm() {
   const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
-    categoryId: '',
-    amount: '',
-    type: 'Expense',
-    description: '',
-    date: new Date().toISOString().split('T')[0],
+    categoryId: "",
+    amount: "",
+    type: "Expense",
+    description: "",
+    date: new Date().toISOString().split("T")[0],
   });
 
   useEffect(() => {
@@ -28,7 +28,7 @@ function TransactionForm() {
           setForm((prev) => ({ ...prev, categoryId: response.data[0].id }));
         }
       } catch {
-        setError('Kunde inte hämta kategorier');
+        setError("Kunde inte hämta kategorier");
       }
     };
     fetchCategories();
@@ -45,7 +45,7 @@ function TransactionForm() {
     setSuccess(false);
 
     try {
-      await api.post('/transactions', {
+      await api.post("/transactions", {
         categoryId: form.categoryId,
         amount: parseFloat(form.amount),
         type: form.type,
@@ -54,14 +54,14 @@ function TransactionForm() {
       });
       setSuccess(true);
       setForm({
-        categoryId: categories.length > 0 ? categories[0].id : '',
-        amount: '',
-        type: 'Expense',
-        description: '',
-        date: new Date().toISOString().split('T')[0],
+        categoryId: categories.length > 0 ? categories[0].id : "",
+        amount: "",
+        type: "Expense",
+        description: "",
+        date: new Date().toISOString().split("T")[0],
       });
     } catch {
-      setError('Kunde inte spara transaktionen');
+      setError("Kunde inte spara transaktionen");
     } finally {
       setLoading(false);
     }
@@ -75,46 +75,99 @@ function TransactionForm() {
 
       <div className="max-w-xl mx-auto px-4 py-6">
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-        {success && <p className="text-green-600 text-sm mb-4">Transaktionen sparades! ✓</p>}
+        {success && (
+          <p className="text-green-600 text-sm mb-4">
+            Transaktionen sparades! ✓
+          </p>
+        )}
 
         {!budgetId ? (
-          <p className="text-gray-500 text-sm">Du behöver skapa en budget först.</p>
+          <p className="text-gray-500 text-sm">
+            Du behöver skapa en budget först.
+          </p>
         ) : (
-          <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-xl p-6">
+          <form
+            onSubmit={handleSubmit}
+            className="bg-white border border-gray-200 rounded-xl p-6"
+          >
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
-              <select name="categoryId" value={form.categoryId} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Kategori
+              </label>
+              <select
+                name="categoryId"
+                value={form.categoryId}
+                onChange={handleChange}
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"
+              >
                 {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </option>
                 ))}
               </select>
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Typ</label>
-              <select name="type" value={form.type} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Typ
+              </label>
+              <select
+                name="type"
+                value={form.type}
+                onChange={handleChange}
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"
+              >
                 <option value="Expense">Utgift</option>
                 <option value="Income">Inkomst</option>
               </select>
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Belopp (kr)</label>
-              <input type="number" name="amount" value={form.amount} onChange={handleChange} placeholder="0" required className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" />
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Belopp (kr)
+              </label>
+              <input
+                type="number"
+                name="amount"
+                value={form.amount}
+                onChange={handleChange}
+                placeholder="0"
+                required
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"
+              />
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Beskrivning</label>
-              <input type="text" name="description" value={form.description} onChange={handleChange} placeholder="t.ex. ICA Maxi" className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" />
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Beskrivning
+              </label>
+              <input
+                type="text"
+                name="description"
+                value={form.description}
+                onChange={handleChange}
+                placeholder="t.ex. ICA Maxi"
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"
+              />
             </div>
 
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Datum</label>
-              <input type="date" name="date" value={form.date} onChange={handleChange} required className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" />
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Datum
+              </label>
+              <input
+                type="date"
+                name="date"
+                value={form.date}
+                onChange={handleChange}
+                required
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"
+              />
             </div>
 
             <Button type="submit" disabled={loading}>
-              {loading ? 'Sparar...' : 'Spara transaktion'}
+              {loading ? "Sparar..." : "Spara transaktion"}
             </Button>
           </form>
         )}

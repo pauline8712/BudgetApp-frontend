@@ -1,5 +1,5 @@
-import ProgressBar from './ProgressBar';
-import { formatCurrency } from '../helpers/format';
+import ProgressBar from "./ProgressBar";
+import { formatCurrency } from "../helpers/format";
 
 // Återanvändbar CategoryCard-komponent — används i Dashboard och statistiksidan
 function CategoryCard({ category }) {
@@ -8,12 +8,16 @@ function CategoryCard({ category }) {
       <div className="flex justify-between items-center mb-2">
         <p className="font-medium text-gray-900">{category.name}</p>
         <p className="text-xs text-gray-400">
-          {formatCurrency(category.currentBalance)} / {formatCurrency(category.allocatedAmount)}
+          {formatCurrency(category.currentBalance)} /{" "}
+          {formatCurrency(category.allocatedAmount)}
         </p>
       </div>
 
       {/* Progressbar visar hur mycket som är kvar av budgeten */}
-      <ProgressBar current={category.currentBalance} allocated={category.allocatedAmount} />
+      <ProgressBar
+        current={category.currentBalance}
+        allocated={category.allocatedAmount}
+      />
 
       <div className="flex justify-between items-center mt-2">
         <p className="text-xs text-gray-400">

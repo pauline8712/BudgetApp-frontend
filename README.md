@@ -24,13 +24,13 @@ A **React** application built with Vite and Tailwind CSS. This is the frontend r
 
 ## Technologies Used
 
-| Technology | Purpose |
-|---|---|
-| React 19 | UI library |
-| Vite | Build tool and development server |
+| Technology       | Purpose                            |
+| ---------------- | ---------------------------------- |
+| React 19         | UI library                         |
+| Vite             | Build tool and development server  |
 | React Router DOM | Client-side routing and navigation |
-| Axios | HTTP client for API communication |
-| Tailwind CSS v4 | Utility-first styling |
+| Axios            | HTTP client for API communication  |
+| Tailwind CSS v4  | Utility-first styling              |
 
 ---
 
@@ -58,12 +58,14 @@ A **React** application built with Vite and Tailwind CSS. This is the frontend r
 ## Setup & Running Locally
 
 **1. Clone the repository**
+
 ```bash
 git clone <frontend-repo-url>
 cd group-project-frontend
 ```
 
 **2. Install dependencies**
+
 ```bash
 npm install
 ```
@@ -71,6 +73,7 @@ npm install
 **3. Create environment file**
 
 Create a `.env` file in the project root:
+
 ```env
 VITE_API_URL=http://localhost:5123/api
 ```
@@ -78,6 +81,7 @@ VITE_API_URL=http://localhost:5123/api
 For a deployed backend, replace the URL with your production API URL.
 
 **4. Start the development server**
+
 ```bash
 npm run dev
 ```
@@ -85,6 +89,7 @@ npm run dev
 The app runs at `http://localhost:5173` by default.
 
 **Build for production:**
+
 ```bash
 npm run build
 ```
@@ -93,8 +98,8 @@ npm run build
 
 ## Environment Variables
 
-| Variable | Description | Example |
-|---|---|---|
+| Variable       | Description                 | Example                     |
+| -------------- | --------------------------- | --------------------------- |
 | `VITE_API_URL` | Base URL of the backend API | `http://localhost:5123/api` |
 
 ---
@@ -135,16 +140,16 @@ src/
 
 ## Pages & Routing
 
-| Path | Page | Protected |
-|---|---|---|
-| `/login` | Login | No |
-| `/register` | Register | No |
-| `/reset-password` | Reset Password | No |
-| `/` | Dashboard | Yes |
-| `/categories` | Categories | Yes |
-| `/add-transaction` | Transaction Form | Yes |
-| `/statistics` | Statistics | Yes |
-| `/admin` | Admin Panel | Yes (Admin role) |
+| Path               | Page             | Protected        |
+| ------------------ | ---------------- | ---------------- |
+| `/login`           | Login            | No               |
+| `/register`        | Register         | No               |
+| `/reset-password`  | Reset Password   | No               |
+| `/`                | Dashboard        | Yes              |
+| `/categories`      | Categories       | Yes              |
+| `/add-transaction` | Transaction Form | Yes              |
+| `/statistics`      | Statistics       | Yes              |
+| `/admin`           | Admin Panel      | Yes (Admin role) |
 
 Routes marked as protected are wrapped in `ProtectedRoute`. If no JWT token exists in `localStorage`, the user is immediately redirected to `/login`. The `NavBar` is hidden on public routes (login, register, reset password).
 
@@ -198,11 +203,11 @@ All HTTP calls go through a single Axios instance defined in `services/api.js`:
 
 ```js
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5123/api',
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5123/api",
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -226,8 +231,8 @@ The **request interceptor** automatically attaches the JWT token to every outgoi
 
 **Token utilities in `helpers/auth.js`:**
 
-| Function | Description |
-|---|---|
-| `decodeToken(token)` | Decodes the base64 JWT payload and returns it as an object |
-| `getUserIdFromToken()` | Reads the user's ID from the decoded token in `localStorage` |
-| `isAdmin()` | Returns `true` if the role claim in the token equals `"Admin"` |
+| Function               | Description                                                    |
+| ---------------------- | -------------------------------------------------------------- |
+| `decodeToken(token)`   | Decodes the base64 JWT payload and returns it as an object     |
+| `getUserIdFromToken()` | Reads the user's ID from the decoded token in `localStorage`   |
+| `isAdmin()`            | Returns `true` if the role claim in the token equals `"Admin"` |

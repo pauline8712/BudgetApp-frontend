@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 function ResetPassword() {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e) => {
@@ -14,14 +14,18 @@ function ResetPassword() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
       <div className="bg-white rounded-xl shadow p-8 w-full max-w-sm">
-        <h1 className="text-2xl font-semibold text-gray-900 mb-2">Återställ lösenord</h1>
+        <h1 className="text-2xl font-semibold text-gray-900 mb-2">
+          Återställ lösenord
+        </h1>
         <p className="text-sm text-gray-500 mb-6">
-          Ange din email så skickar vi instruktioner för att återställa ditt lösenord.
+          Ange din email så skickar vi instruktioner för att återställa ditt
+          lösenord.
         </p>
 
         {submitted ? (
           <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-sm text-green-700">
-            Om email-adressen finns i systemet skickas ett återställningsmail inom kort.
+            Om email-adressen finns i systemet skickas ett återställningsmail
+            inom kort.
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
