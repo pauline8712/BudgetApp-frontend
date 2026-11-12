@@ -84,7 +84,7 @@ function Statistics() {
           mapped[categoryId] = transactions;
         });
         setWeeklyTransactions(mapped);
-      } catch (err) {
+      } catch {
         setWeekError('Kunde inte hämta veckotransaktioner');
       } finally {
         setWeekLoading(false);

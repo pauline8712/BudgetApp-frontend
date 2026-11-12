@@ -28,7 +28,7 @@ function Register() {
         password: form.password,
       });
       navigate('/login');
-    } catch (err) {
+    } catch {
       setError('Registrering misslyckades. Email kanske redan används.');
     } finally {
       setLoading(false);

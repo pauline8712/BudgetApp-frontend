@@ -11,7 +11,7 @@ function useCategories(budgetId) {
     try {
       const response = await api.get(`/categories/${budgetId}`);
       setCategories(response.data);
-    } catch (err) {
+    } catch {
       setError('Kunde inte hämta kategorier');
     } finally {
       setLoading(false);

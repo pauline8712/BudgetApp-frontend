@@ -47,7 +47,9 @@ function Dashboard() {
     try {
       const response = await api.get(`/budgets/${userId}`);
       setBudgets(response.data);
-    } catch {}
+    } catch {
+      // Tyst fel: budgetlistan visas tom om hämtningen misslyckas (se issue #59)
+    }
   }, []);
 
   useEffect(() => {

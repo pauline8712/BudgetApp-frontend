@@ -27,7 +27,7 @@ function TransactionForm() {
         if (response.data.length > 0) {
           setForm((prev) => ({ ...prev, categoryId: response.data[0].id }));
         }
-      } catch (err) {
+      } catch {
         setError('Kunde inte hämta kategorier');
       }
     };
@@ -60,7 +60,7 @@ function TransactionForm() {
         description: '',
         date: new Date().toISOString().split('T')[0],
       });
-    } catch (err) {
+    } catch {
       setError('Kunde inte spara transaktionen');
     } finally {
       setLoading(false);

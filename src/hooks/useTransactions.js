@@ -15,7 +15,7 @@ function useTransactions(categoryId) {
       try {
         const response = await api.get(`/transactions/${categoryId}`);
         setTransactions(response.data);
-      } catch (err) {
+      } catch {
         setError('Kunde inte hämta transaktioner');
       } finally {
         setLoading(false);

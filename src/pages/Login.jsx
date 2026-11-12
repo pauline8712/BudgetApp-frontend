@@ -32,7 +32,7 @@ function Login() {
       }
 
       navigate('/');
-    } catch (err) {
+    } catch {
       setError('Fel email eller lösenord');
     } finally {
       setLoading(false);

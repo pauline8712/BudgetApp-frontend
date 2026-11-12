@@ -7,6 +7,9 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  test: {
+    environment: 'jsdom',
+  },
   preview: {
     allowedHosts: ['group-project-frontend-production.up.railway.app'],
   },

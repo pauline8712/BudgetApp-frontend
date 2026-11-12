@@ -26,7 +26,7 @@ function Admin() {
         ]);
         setUsers(usersRes.data);
         setBudgets(budgetsRes.data);
-      } catch (err) {
+      } catch {
         setError('Kunde inte hämta admindata');
       } finally {
         setLoading(false);

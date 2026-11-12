@@ -16,7 +16,7 @@ function useBudgetSummary(budgetId) {
       try {
         const response = await api.get(`/budgets/summary/${budgetId}`);
         setSummary(response.data);
-      } catch (err) {
+      } catch {
         setError('Kunde inte hämta budgetsammanfattning');
       } finally {
         setLoading(false);
