@@ -2,24 +2,40 @@ name: Frontend CI
 on:
   pull_request:
     branches: [main]
-    paths:
-      - "src/**"
-      - "public/**"
-      - "index.html"
-      - "package.json"
-      - "package-lock.json"
-      - "vite.config.js"
-      - "eslint.config.js"
-      - ".prettierrc"
-      - ".prettierignore"
-      - ".github/workflows/frontend-ci.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  # 1. Kolla om PR:en ändrar frontend-kod. (Ersätter "paths" från övning 5.)
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      code: ${{ steps.diff.outputs.code }}
+    steps:
+      - name: Hämta koden
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Har frontend-kod ändrats?
+        id: diff
+        env:
+          BASE: ${{ github.base_ref }}
+        run: |
+          git diff --name-only "origin/$BASE...HEAD" | tee changed.txt
+          if grep -qE '^(src/|public/|index\.html$|package\.json$|package-lock\.json$|vite\.config\.js$|eslint\.config\.js$|\.prettierrc$|\.prettierignore$|\.github/workflows/frontend-ci\.yml$)' changed.txt; then
+            echo "code=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "code=false" >> "$GITHUB_OUTPUT"
+            echo "Ingen frontend-kod ändrad – hoppar över bygget."
+          fi
+
+  # 2. Lint, test och build – bara om kod har ändrats.
   lint-test-build:
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Hämta koden
@@ -45,3 +61,19 @@ jobs:
 
       - name: Build
         run: npm run build
+
+  # 3. Grinden – körs ALLTID och är den enda kontrollen som är krävd i rulesetet.
+  ci-ok:
+    if: always()
+    needs: [changes, lint-test-build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Samla ihop resultatet
+        env:
+          CHANGES: ${{ needs.changes.result }}
+          BUILD: ${{ needs.lint-test-build.result }}
+        run: |
+          echo "changes: $CHANGES, lint-test-build: $BUILD"
+          if [ "$CHANGES" != "success" ]; then exit 1; fi
+          if [ "$BUILD" = "failure" ] || [ "$BUILD" = "cancelled" ]; then exit 1; fi
+          echo "Allt grönt (eller inget att bygga) ✅"
