@@ -1,5 +1,4 @@
 // Återanvändbar Button-komponent — används i hela appen
-//test 1
 function Button({
   children,
   onClick,
